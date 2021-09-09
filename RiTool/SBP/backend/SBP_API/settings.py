@@ -82,8 +82,12 @@ WSGI_APPLICATION = 'SBP_API.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'PERSONAL_PROJECT',
+        'USER': 'admin',
+        'PASSWORD': '997518rN5128',
+        'HOST': '198.74.57.243',
+        'PORT': '3306',
     }
 }
 
