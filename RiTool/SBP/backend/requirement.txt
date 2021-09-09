@@ -6,6 +6,8 @@ Django==3.2.4
 django-cors-headers==3.7.0
 django-friendship==1.9.1
 djangorestframework==3.12.4
+mariadb==1.0.7
+mysqlclient==2.0.3
 paramiko==2.7.2
 pika==1.2.0
 pycparser==2.20
