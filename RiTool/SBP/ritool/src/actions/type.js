@@ -1,0 +1,15 @@
+export const SIGN_IN = "SIGN_IN";
+export const SIGN_OUT = "SIGN_OUT";
+export const REDIRECT_PAGE = "REDIRECT_PAGE";
+export const FILESTOUPLOAD = "FILESTOUPLOAD";
+export const REGISTER_USER = "REGISTER_USER";
+export const SUBMIT_FORM = "SUBMIT_FORM";
+export const FETCH_FORMS = "FETCH_FORMS";
+export const FETCH_FORM = "FETCH_FORM";
+export const FETCH_USER = "FETCH_USER";
+export const FETCH_FRIENDS = "FETCH_FRIENDS";
+export const FETCH_PENDING_REQUEST = "FETCH_PENDING_REQUEST";
+export const FETCH_SENT_REQUEST = "FETCH_SENT_REQUEST";
+export const SEND_FRIEND_REQUEST = "SEND_FRIEND_REQUEST";
+export const ADD_COMMENT = "ADD_COMMENT";
+export const GET_COMMENTS = "GET_COMMENTS";
