@@ -1,13 +1,14 @@
+import uuid as uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
-import statistics
 
 
 # Create your models here.
 class Form(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    form_unique_id = models.CharField(max_length=350, blank=False, unique=True)
     title = models.CharField(max_length=50, null=False, blank=False)
     summary = models.TextField(max_length=100, blank=False, null=False)
     details = models.TextField(max_length=350, blank=False, null=False)

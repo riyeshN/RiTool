@@ -30,7 +30,7 @@ class FormSerializer(serializers.ModelSerializer):
     class Meta:
         model = Form
         fields = (
-            'id', 'user', 'title', 'summary', 'created_at', 'details', 'file_url', 'no_of_comments', 'likedislikeratio'
+            'id', 'user', 'title', 'summary', 'created_at', 'form_unique_id', 'details', 'file_url', 'no_of_comments', 'likedislikeratio'
         )
 
 
@@ -40,7 +40,7 @@ class FormGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Form
         fields = (
-            'id', 'user', 'title', 'summary', 'created_at', 'details', 'file_url', 'no_of_comments', 'likedislikeratio'
+            'id', 'user', 'title', 'summary', 'created_at', 'form_unique_id', 'details', 'file_url', 'no_of_comments', 'likedislikeratio'
         )
 
 

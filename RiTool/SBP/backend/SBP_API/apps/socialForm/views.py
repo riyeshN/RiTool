@@ -1,7 +1,10 @@
 import os.path
 import json
 import datetime
+from django.utils import timezone
+import uuid
 from rest_framework import viewsets, status, views
+from ..AWS.aws_container import store_file_s3, delete_s3_object
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -11,6 +14,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer, CommentSerializer, FormSerializer, TokenSerializer, FormGetSerializer, \
     CommentGetSerializer
 from ..helperClass.sshHelper import ssh_run, ssh_addfile, ssh_getfile, ssh_removedirectory
+from ..MessageQueue.emit_Form_topic import form_file_producer
 from rest_framework.decorators import action
 from ...settings import SEND_FORM_FILES
 from friendship.models import Friend, Follow, Block, FriendshipRequest
@@ -47,8 +51,8 @@ class FormViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.file_url:
-            filepath = os.path.join(SEND_FORM_FILES, f"{request.auth.user_id}", instance.title.replace(" ", "_"))
-            ssh_removedirectory(filepath)
+            date = instance.created_at.date()
+            delete_s3_object(f"{instance.user_id}/{date}/{instance.form_unique_id}/")
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -57,18 +61,22 @@ class FormViewSet(viewsets.ModelViewSet):
         _mutable = request.data._mutable
         # set to mutable
         request.data._mutable = True
+        unique_uuid = str(uuid.uuid4())
+        request.data['form_unique_id'] = unique_uuid
         request.data['user'] = self.request.user.id
         files = request.FILES.getlist('files')
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         # Iterate through the files and insert them into the unixbox
         json_file = {}
         for file in files:
-            filepath = os.path.join(SEND_FORM_FILES, f"{request.auth.user_id}", request.data['title'].replace(" ", "_"),
-                                    file.name)
-            filetoinsert = file.file
-            json_file[file.name] = ssh_addfile(filetoinsert, filepath)
+            file_to_insert = file.file
+            # json_file[file.name] = ssh_addfile(filetoinsert, filepath)
+            # form_file_producer("09291029.FileInsert", file_to_insert)
+            user_date = timezone.now().date()
+            store_file_s3(file_to_insert, self.request.user.id, user_date, unique_uuid, file.name)
+            link = f"https://ritool.s3.amazonaws.com/{self.request.user.id}/{user_date}/{unique_uuid}/{file.name}"
+            json_file[file.name] = link
         # add JSON to string
         json_input = json.dumps(json_file)
         request.data['file_url'] = json_input
